@@ -22,37 +22,7 @@ def plot(ys: Any, xs: Optional[Any] = None, **kwargs) -> None:
     - Any additional keyword arguments are passed to the
       `uniplot.options.Options` class.
     """
-    plt = plot_gen(xs=xs, ys=ys, **kwargs)
-
-    # Main loop for interactive mode. Will only be executed once when not in
-    # interactive mode.
-    first_iteration: bool = True
-    while first_iteration or plt.options.interactive:
-        plt.update()
-
-        if plt.options.interactive:
-            plt.print_subscript("Move h/j/k/l, zoom u/n, or r to reset. q to quit.")
-            key_pressed = readkey()
-
-            # Here we support 3 ways to move: Vim-style, arrow keys and FPS-style
-            if key_pressed in ["h", key.LEFT, "a"]:
-                plt.options.shift_view_left()
-            elif key_pressed in ["l", key.RIGHT, "d"]:
-                plt.options.shift_view_right()
-            elif key_pressed in ["j", key.DOWN, "s"]:
-                plt.options.shift_view_down()
-            elif key_pressed in ["k", key.UP, "w"]:
-                plt.options.shift_view_up()
-            elif key_pressed in ["u", "]"]:
-                plt.options.zoom_in()
-            elif key_pressed in ["n", "["]:
-                plt.options.zoom_out()
-            elif key_pressed == "r":
-                plt.options.reset_view()
-            elif key_pressed in ["q", "Q", key.ESC]:
-                break
-
-        first_iteration = False
+    pass
 
 
 class plot_gen:
@@ -71,54 +41,7 @@ class plot_gen:
                 series=self.series, kwargs=kwargs
             )
 
-    def update(self, **kwargs) -> Optional[str]:
-        header_buffer: List[str] = []
-        body_buffer: List[str] = []
 
-        full_kwargs = {**self.default_arguments, **kwargs}
-
-        if "xs" in kwargs or "ys" in kwargs:
-            self.series = MultiSeries(
-                xs=full_kwargs.get("xs"), ys=full_kwargs.get("ys")
-            )
-        if len(kwargs.keys()) > 0 or self.options is None:
-            # New options provided, so regenerate `self.options`
-            # NOTE This overwrites the view window if not supplied explicitely
-            if "xs" in full_kwargs:
-                del full_kwargs["xs"]
-            del full_kwargs["ys"]
-            self.options = validate_and_transform_options(
-                series=self.series, kwargs=full_kwargs
-            )
-
-        header_buffer = sections.generate_header(self.options)
-
-        # Generate and collect plot content
-        body_buffer = []
-        (
-            x_axis_labels,
-            y_axis_labels,
-            pixel_character_matrix,
-        ) = sections.generate_body_raw_elements(self.series, self.options)
-        body_buffer += sections.generate_body(
-            x_axis_labels, y_axis_labels, pixel_character_matrix, self.options
-        )
-
-        # Delete plot before we re-draw
-        if not self.return_string:
-            elements.erase_previous_lines(self.last_nr_of_lines)
-
-        # Output plot
-        output = "\n".join(header_buffer + body_buffer)
-        self.last_nr_of_lines = elements.count_lines(output)
-        if self.return_string:
-            return output
-        print(output)
-        return None
-
-    def print_subscript(self, text: str) -> None:
-        self.last_nr_of_lines += elements.count_lines(text)
-        print(text)
 
 
 def plot_to_string(ys: Any, xs: Optional[Any] = None, **kwargs) -> str:
@@ -129,8 +52,7 @@ def plot_to_string(ys: Any, xs: Optional[Any] = None, **kwargs) -> str:
     Can be used to integrate uniplot in other applications, or if the output is
     desired to be not stdout.
     """
-    plt = plot_gen(return_string=True)
-    return str(plt.update(xs=xs, ys=ys, **kwargs))
+    pass
 
 
 #####################################
@@ -156,15 +78,7 @@ def histogram(
     - Any additional keyword arguments are passed to the
       `uniplot.options.Options` class.
     """
-    # HACK Use the `MultiSeries` constructor to cast values to uniform format
-    multi_series = MultiSeries(ys=xs)
-    xs_histo, ys_histo = elements.prepare_histogram(
-        multi_series, bins, bins_min, bins_max
-    )
-
-    # Histograms usually make sense only with lines
-    kwargs["lines"] = True
-    plot(xs=xs_histo, ys=ys_histo, **kwargs)
+    pass
 
 
 def histogram_to_string(
@@ -181,13 +95,4 @@ def histogram_to_string(
     Can be used to integrate uniplot in other applications, or if the output is
     desired to be not stdout.
     """
-    # HACK Use the `MultiSeries` constructor to cast values to uniform format
-    multi_series = MultiSeries(ys=xs)
-    xs_histo, ys_histo = elements.prepare_histogram(
-        multi_series, bins, bins_min, bins_max
-    )
-
-    plt = plot_gen(return_string=True)
-    # Histograms usually make sense only with lines
-    kwargs["lines"] = True
-    return str(plt.update(xs=xs_histo, ys=ys_histo, **kwargs))
+    pass

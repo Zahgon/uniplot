@@ -78,7 +78,7 @@ class MultiSeries:
         """
         Return a list with the length of the time series.
         """
-        return [len(ys_row) for ys_row in self.ys]
+        pass
 
     def set_x_axis_to_log10(self) -> None:
         """
@@ -86,10 +86,7 @@ class MultiSeries:
 
         Raises a `ValueError` if any the x-axis is a time series.
         """
-        if self.x_is_time_series:
-            raise ValueError("Cannot format a time series as logarithmic.")
-
-        self.xs = [_safe_log10(x) for x in self.xs]
+        pass
 
     def set_y_axis_to_log10(self) -> None:
         """
@@ -97,22 +94,11 @@ class MultiSeries:
 
         Raises a `ValueError` if any the x-axis is a time series.
         """
-        if self.y_is_time_series:
-            raise ValueError("Cannot format a time series as logarithmic.")
+        pass
 
-        self.ys = [_safe_log10(y) for y in self.ys]
 
-    def y_max(self) -> float:
-        return _safe_maxs(self.ys)
 
-    def y_min(self) -> float:
-        return _safe_mins(self.ys)
 
-    def x_max(self) -> float:
-        return _safe_maxs(self.xs)
-
-    def x_min(self) -> float:
-        return _safe_mins(self.xs)
 
 
 ###########
@@ -126,12 +112,7 @@ def _is_multi_dimensional(series: Any) -> bool:
 
     Ref.: https://stackoverflow.com/questions/1952464/in-python-how-do-i-determine-if-an-object-is-iterable
     """
-    try:
-        [iter(x) for x in series]
-    except TypeError:
-        return False
-    else:
-        return True
+    pass
 
 
 def _is_time_series(series: Any) -> bool:
@@ -139,17 +120,7 @@ def _is_time_series(series: Any) -> bool:
     Check if the object is datetime-like. This might be a pandas DateTime, a
     list of datetimes, or a list of date(s).
     """
-    np_array = np.array(series)
-    if np.issubdtype(np_array.dtype, np.number):
-        return False
-    try:
-        # Here we can omit the `[s]` to not cause unnecessary conversion work,
-        # as the convertion to "datetime64[s]" is guaranteed to work later on,
-        # if "datetime64" works.
-        np_array.astype("datetime64")
-        return True
-    except Exception:
-        return False
+    pass
 
 
 def _cast_as_numpy_floats(array: Any) -> NDArray:
@@ -160,12 +131,7 @@ def _cast_as_numpy_floats(array: Any) -> NDArray:
     floating-point type, it returns the array. Otherwise, it attempts to cast
     it as NumPy float.
     """
-    numpy_array = np.array(array)
-    if np.issubdtype(numpy_array.dtype, np.inexact):
-        return numpy_array
-    # If it not already intitializes as a numeric type, then all we can do is
-    # attempt to cast to float (including NaNs)
-    return numpy_array.astype(float)
+    pass
 
 
 def _cast_as_numpy_time_series(series: Any) -> NDArray:
@@ -176,31 +142,14 @@ def _cast_as_numpy_time_series(series: Any) -> NDArray:
     We assume that at this point we have already checked that the conversion is
     possible.
     """
-    # NOTE It is really important that throughout the library we use the
-    # "datetime64[s]" NumPy format consistently. Using only `np.datetime`
-    # or a different type like "datetime64[m]" means that the conversion to
-    # floating point will depend on the input format, which will lead to
-    # unexpected behavior.
-    return np.array(series).astype("datetime64[s]").astype(float)
+    pass
 
 
-def _safe_max(array: NDArray) -> float:
-    return array[~np.isnan(array)].max()
 
 
-def _safe_maxs(series: List) -> float:
-    return max([_safe_max(row) for row in series if len(row) > 0])
 
 
-def _safe_mins(series: List) -> float:
-    return min([_safe_min(row) for row in series if len(row) > 0])
 
 
-def _safe_min(array: NDArray) -> float:
-    return array[~np.isnan(array)].min()
 
 
-def _safe_log10(x: NDArray) -> NDArray:
-    x = x.astype(float)
-    x[x <= 0.0] = np.nan
-    return np.log10(x)

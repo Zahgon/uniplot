@@ -37,6 +37,7 @@ class Color:
 
     @classmethod
     def from_param(cls, color_data: Any) -> "Color":
+        """Create a Color from a string, tuple, or False."""
         if isinstance(color_data, str):
             if color_data[0] == "#":
                 return cls.from_hex(color_data)
@@ -49,6 +50,7 @@ class Color:
 
     @classmethod
     def from_terminal(cls, color_name: str) -> "Color":
+        """Create a Color from a terminal color name."""
         color_name = str(color_name).strip().lower()
         if color_name not in ANSI_COLOR_CODES:
             raise ValueError(f"Invalid color str: '{color_name}'")
@@ -56,6 +58,7 @@ class Color:
 
     @classmethod
     def from_hex(cls, color_name: str) -> "Color":
+        """Create a Color from a hex string like '#1f77b4'."""
         hex_str = str(color_name).strip().lower().lstrip("#")
         r, g, b = tuple(int(hex_str[i : i + 2], 16) for i in (0, 2, 4))
         r = cls._clip_to_valid_int(r)
@@ -65,27 +68,27 @@ class Color:
 
     @classmethod
     def from_rgb(cls, r: int, g: int, b: int) -> "Color":
+        """Create a Color from RGB integer values."""
         r = cls._clip_to_valid_int(r)
         g = cls._clip_to_valid_int(g)
         b = cls._clip_to_valid_int(b)
         return cls(rgb=(r, g, b))
 
     def is_enabled(self) -> bool:
-        return self.terminal_color is not None or self.rgb is not None
+        """Check if this color is enabled."""
+        pass
 
     def colorize(self, string: str) -> str:
-        if not self.is_enabled():
-            return string
-        return self.enable_str() + str(string) + COLOR_RESET_CODE
+        """Wrap a string with ANSI color codes."""
+        pass
 
     def enable_str(self) -> str:
-        if self.terminal_color:
-            return ANSI_COLOR_CODES[self.terminal_color]
-        r, g, b = self.rgb  # type: ignore
-        return f"\033[38;2;{r};{g};{b}m"
+        """Return the ANSI escape code to enable this color."""
+        pass
 
     @staticmethod
     def _clip_to_valid_int(x) -> int:
+        """Clip a value to the valid color range 0-255."""
         if x < 0 or x > 255:
             print(
                 f"Warning: Color value of {x} invalid, clipping to valid range 0 - 255."

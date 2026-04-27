@@ -13,7 +13,7 @@ def discretize(x: Any, x_min: float, x_max: float, steps: int) -> int:
     """
     Returns a discretized integer.
     """
-    return int(((floatify(x) - x_min) / (x_max - x_min)) * steps)
+    pass
 
 
 def discretize_array(x: NDArray, x_min: float, x_max: float, steps: int) -> NDArray:
@@ -23,8 +23,7 @@ def discretize_array(x: NDArray, x_min: float, x_max: float, steps: int) -> NDAr
 
     Note that the integer values are not bound to the rande defined by `steps`.
     """
-    array = ((np.asarray(x).astype(float) - x_min) / (x_max - x_min)) * steps
-    return np.nan_to_num(array, nan=-1).astype(int)
+    pass
 
 
 def compute_y_at_middle_of_row(
@@ -35,12 +34,7 @@ def compute_y_at_middle_of_row(
 
     Typical use case is to display the right axis tick.
     """
-    return invert_discretize(
-        i=height - height_index_from_top - 1,
-        minimum=y_min,
-        maximum=y_max,
-        nr_bins=height,
-    )
+    pass
 
 
 def invert_discretize(i: int, minimum: float, maximum: float, nr_bins: int) -> float:
@@ -49,10 +43,7 @@ def invert_discretize(i: int, minimum: float, maximum: float, nr_bins: int) -> f
 
     This is the inverse of `discretizer.discretize`.
     """
-    assert maximum > minimum
-
-    step_size = (maximum - minimum) / nr_bins
-    return float((i + 0.5) * step_size + minimum)
+    pass
 
 
 def invert_discretize_array(
@@ -63,7 +54,4 @@ def invert_discretize_array(
 
     This is the inverse of `discretizer.discretize`.
     """
-    assert maximum > minimum
-
-    step_size = (maximum - minimum) / nr_bins
-    return ((np.asarray(i).astype(float) + 0.5) * step_size + minimum).astype(float)
+    pass
